@@ -1,0 +1,25 @@
+
+<!--each product has id,name,price,description-->
+<h2>Products</h2>
+
+<div *ngFor="let product of products">
+
+  <h3>
+ <!--html tag with dynamic title attribute--> 
+  <a [title]="product.name + ' details'">
+      {{ product.name }}
+    </a>
+  </h3>
+
+  <p *ngIf="product.description"><!--if true then product description gets shown-->
+    Description: {{ product.description }}
+  </p>
+
+  <button type="button" (click)="share()">
+    Share
+  </button>
+<!-- "app-product-alerts" component,is passed the current product object as an input property.-->
+<app-product-alerts [product]="product">
+</app-product-alerts>
+
+</div>

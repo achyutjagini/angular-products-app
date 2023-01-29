@@ -1,0 +1,173 @@
+//You build Angular applications with components.
+//Components define areas of responsibility
+//in the UI that let you reuse sets of UI functionality.
+
+//A component consists of three things.
+//component class
+//html template
+//component specific styles
+
+/*<app-root>  The first component to load and the container
+              for the other components
+<app-top-bar>	The store name and checkout button
+<app-product-list>	The product list
+<app-product-alerts>	A component that contains the application's alerts*/
+
+
+Create the product list
+In this section, you'll update the application to display a list of products.
+You'll use predefined product data from the products.ts file and methods from
+the product-list.component.ts file. This section guides you through editing the HTML,
+also known as the template.
+
+In the product-list folder, open the template file product-list.component.html.
+Add an *ngFor structural directive on a <div>, as follows.
+
+<h2>Products</h2>
+<div *ngFor="let product of products">
+</div>
+
+With *ngFor, the <div> repeats for each product in the list.
+Structural directives shape or reshape the DOM's structure, by adding,
+removing, and manipulating elements. For more information about structural 
+directives, see Structural directives.
+
+Inside the <div>, add an <h3> and {{ product.name }}. The {{ product.name }} statement 
+is an example of Angular's interpolation syntax. Interpolation {{ }} lets you render
+the property value as text.
+
+<h2>Products</h2>
+
+<div *ngFor="let product of products">
+  <h3>
+      {{ product.name }}
+  </h3>
+</div>
+
+To make each product name a link to product details, add the <a> 
+element around {{ product.name }}.
+Set the title to be the product's name by using the property
+binding [ ] syntax, as follows:
+
+<h2>Products</h2>
+<div *ngFor="let product of products">
+  <h3>
+    <a [title]="product.name + ' details'">
+      {{ product.name }}
+    </a>
+  </h3>
+</div>
+
+In the preview pane, hover over a product name to see the bound name property value, which is 
+the product name plus the word "details". Property binding [ ] lets you use
+the property value in a template expression.
+
+Add the product descriptions. On a <p> element, use an *ngIf directive so that
+Angular only creates the <p> element if the current product has a description.
+
+The application now displays the name and description of each product in the list. Notice
+that the final product does not have a description paragraph. Angular doesn't create the <p> 
+element because the product's description property is empty.
+
+Add a button so users can share a product. Bind the button's click event to the 
+share() method 
+in product-list.component.ts. Event binding uses a set of parentheses, ( ), 
+around the event,as in the (click) event on the <button> element.
+
+Clicking the Share button triggers an alert that states,"The product has been shared!".
+
+
+Pass data to a child component
+Currently, the product list displays the name and description of each product. The
+ProductListComponent also defines a products property that contains imported data for 
+each product from the products array in products.ts.
+
+The next step is to create a new alert feature that uses product data 
+from the ProductListComponent. 
+The alert checks the product's price, and, if the price is greater than $700, 
+displays a Notify Me
+button that lets users sign up for notifications when the product goes on sale.
+
+This section walks you through creating a child component, ProductAlertsComponent,
+that can receive data from its parent component, ProductListComponent.
+Click on the plus sign above the current terminal to create a new terminal to 
+run the command to generate the component.
+
+Open product-alerts.component.ts. The @Component() decorator indicates that the following 
+class is a component. @Component() also provides metadata about the component, 
+including its selector, templates, and styles.
+
+Key features in the @Component() are as follows:
+
+The selector, app-product-alerts, identifies the component. By convention, 
+Angular component selectors begin with the prefix app-, followed by the component name.
+The template and style filenames reference the component's HTML and CSS
+The @Component() definition also exports the class, ProductAlertsComponent, 
+which handles functionality for the component.
+
+To set up ProductAlertsComponent to receive product data, first import Input from @angular/core.
+
+In the ProductAlertsComponent class definition, define a property named product
+with an @Input() decorator.
+The @Input() decorator indicates that the property value passes in from the
+component's parent, ProductListComponent.
+
+
+Finally, to display ProductAlertsComponent as a child of ProductListComponent, 
+add the <app-product-alerts> element to product-list.component.html. Pass the current
+product as input to the component using property binding.
+
+<button type="button" (click)="share()">
+  Share
+</button>
+
+<app-product-alerts [product]="product">
+</app-product-alerts>
+
+The new product alert component takes a product as input from the product list. 
+With that input, it shows or hides the Notify Me button, based on the price of the product.
+The Phone XL price is over $700, so the Notify Me button appears on that product.
+
+Pass data to a parent component
+To make the Notify Me button work, the child component needs to notify and pass the data
+to the parent component. The ProductAlertsComponent needs to emit an event when the user
+clicks Notify Me and the ProductListComponent needs to respond to the event.
+
+In new components, the Angular Generator includes an empty constructor(), the OnInit interface, 
+and the ngOnInit() method. Since these steps don't use them, the following code examples 
+omit them for brevity.
+
+In product-alerts.component.ts, import Output and EventEmitter from @angular/core.
+
+In the component class, define a property named notify with an @Output() decorator and an instance
+of EventEmitter(). Configuring ProductAlertsComponent with an @Output() allows the ProductAlertsComponent 
+to emit an event when the value of the notify property changes.
+
+export class ProductAlertsComponent {
+  @Input() product: Product | undefined;
+  @Output() notify = new EventEmitter();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
