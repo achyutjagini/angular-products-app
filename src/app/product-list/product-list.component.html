@@ -5,7 +5,8 @@
 <div *ngFor="let product of products">
 
   <h3>
- <!--html tag with dynamic title attribute--> 
+ <!--html tag with dynamic title attribute-->
+ <!--details is a fixed word-->
   <a [title]="product.name + ' details'">
       {{ product.name }}
     </a>
@@ -18,8 +19,13 @@
   <button type="button" (click)="share()">
     Share
   </button>
+  <!--Finally, to display ProductAlertsComponent as a child of ProductListComponent,
+     add the <app-product-alerts> element to product-list.component.html. Pass the
+     current product as input to the component using property binding.-->
+     
 <!-- "app-product-alerts" component,is passed the current product object as an input property.-->
-<app-product-alerts [product]="product">
+<app-product-alerts
+  [product]="product" 
+  (notify)="onNotify()">
 </app-product-alerts>
-
 </div>

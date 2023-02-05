@@ -139,8 +139,10 @@ omit them for brevity.
 
 In product-alerts.component.ts, import Output and EventEmitter from @angular/core.
 
-In the component class, define a property named notify with an @Output() decorator and an instance
-of EventEmitter(). Configuring ProductAlertsComponent with an @Output() allows the ProductAlertsComponent 
+In the component class, define a property named notify with an @Output() decorator 
+and an instance
+of EventEmitter(). Configuring ProductAlertsComponent with an @Output() allows the
+ProductAlertsComponent 
 to emit an event when the value of the notify property changes.
 
 export class ProductAlertsComponent {
@@ -148,23 +150,138 @@ export class ProductAlertsComponent {
   @Output() notify = new EventEmitter();
 }
 
+Define the behavior that happens when the user clicks the button. 
+The parent, ProductListComponent —not the ProductAlertsComponent— acts 
+when the child raises the event. In product-list.component.ts, define an onNotify()
+method,similar to the share() method.
+
+At this stage of development, the online store application has a basic product catalog.
+In the following sections, you'll add the following features to the application:
+Type a URL in the address bar to navigate to a corresponding product page
+Click links on the page to navigate within your single-page application
+Click the browser's back and forward buttons to navigate the browser history intuitively
+
+The application already uses the Angular Router to navigate to the ProductListComponent. 
+This section shows you how to define a route to show individual product details.
+
+Generate a new component for product details. In the terminal generate a new 
+product-details component by running the following command:
+
+In app.module.ts, add a route for product details, with a path of products/:productId 
+and ProductDetailsComponent for the component.
+
+rc/app/app.module.ts
+content_copy
+@NgModule({
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot([
+      { path: '', component: ProductListComponent },
+      { path: 'products/:productId', component: ProductDetailsComponent },
+    ])
+  ],
+  declarations: [
+    AppComponent,
+    TopBarComponent,
+    ProductListComponent,
+    ProductAlertsComponent,
+    ProductDetailsComponent,
+  ]
+
+The RouterLink directive helps you customize the anchor element. In this case,
+the route, or URL, contains one fixed segment, /products. The final segment is variable,
+inserting the id property of the current product. For example, the URL for a product
+with an id of 1 would be similar to https://getting-started-myfork.stackblitz.io/products/1.
+
+Verify that the router works as intended by clicking the product name. The 
+application should display the ProductDetailsComponent, which currently says
+"product-details works!"
+
+Notice that the URL in the preview window changes. The final segment is
+products/# where # is the number of the route you clicked.
 
 
+The ProductDetailsComponent handles the display of each product. The Angular Router 
+displays components based on the browser's URL and your defined routes.
+
+In this section, you'll use the Angular Router to combine the products data and route
+information to display the specific details for each product.
+
+In product-details.component.ts, import ActivatedRoute from @angular/router, and the 
+products array from ../products.
+
+src/app/product-details/product-details.component.ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Product, products } from '../products';
 
 
+ActivatedRoute is specific to each component that the Angular Router loads. ActivatedRoute
+contains information about the route and the route's parameters.
+
+By injecting ActivatedRoute, you are configuring the component to use a service. The Managing
+Data step covers services in more detail.
+
+In the ngOnInit() method, extract the productId from the route parameters and find the
+corresponding product in the products array.
+The route parameters correspond to the path variables you define in the route. To access the route parameters,
+we use route.snapshot, which is the ActivatedRouteSnapshot that contains information about the active route 
+at that particular moment in time. The URL that matches the route provides the productId . Angular uses the
+productId to display the details for each unique product.
+
+Update the ProductDetailsComponent template to display product details with an *ngIf. If a product 
+exists, the <div> renders with a name, price, and description.
+
+<h2>Product Details</h2>
+
+<div *ngIf="product">
+  <h3>{{ product.name }}</h3>
+  <h4>{{ product.price | currency }}</h4>
+  <p>{{ product.description }}</p>
+</div>
+
+The route parameters correspond to the path variables you define in the route. To access the route
+parameters, we use route.snapshot, which is the ActivatedRouteSnapshot that contains information 
+about the active route at that particular moment in time. The URL that matches the route provides
+the productId . Angular uses the productId to display the details for each unique product.
 
 
+The line, <h4>{{ product.price | currency }}</h4>, uses the currency pipe to transform product.price
+from a number to a currency string. A pipe is a way you can transform data in your HTML template.
+For more information about Angular pipes, see Pipes.
 
 
+When users click on a name in the product list, the router navigates them to the distinct URL 
+for the product, shows the ProductDetailsComponent, and displays the product details.
 
+to generate component-ng generate component
 
+This section walks you through creating the CartService that tracks products added to shopping cart.
+In the terminal generate a new cart service by running the following command:
+ng generate service cart
 
+Import the Product interface from ./products.ts into the cart.service.ts file, and in 
+the CartService class, define an items property to store the array of the current products in the cart.
+Define methods to add items to the cart, return cart items, and clear the cart items.
 
+  addToCart(product: Product) {
+    this.items.push(product);
+  }
 
+  getItems() {
+    return this.items;
+  }
 
-
-
-
+  clearCart() {
+    this.items = [];
+    return this.items;
+  }
+/* . . . */
+}
+The addToCart() method appends a product to an array of items
+The getItems() method collects the items users add to the cart and returns each item with its associated quantity
+The clearCart() method returns an empty array of items, which empties the cart
 
 
 
